@@ -35,6 +35,16 @@ async function run() {
     // const coffeeCollection = database.collection('coffee');
     const visasCollection = database.collection("visas");
 
+
+
+  // get all data from DB to show Frontend that for crete API Backend
+  app.get("/visas", async (req, res) => {
+    const cursor = visasCollection.find();
+    const result = await cursor.toArray();
+    res.send(result);
+  });
+ 
+
 // add new visa post
     app.post("/visa", async (req, res) => {
       const newVisa = req.body;
