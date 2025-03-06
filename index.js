@@ -1,13 +1,18 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-require("dotenv").config();
 
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  // origin: ["http://localhost:5173", "https://coffee-store-4439e.web.app"],
+  origin: ["http://localhost:5173", "https://visa-navigator-9458a.web.app"],
+  credentials: true,
+}));
 app.use(express.json());
 
 // db server con with authentication
@@ -16,6 +21,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
+    serverSelectionTimeoutMS: 50000,
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
