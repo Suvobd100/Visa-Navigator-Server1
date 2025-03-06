@@ -43,7 +43,6 @@ async function run() {
       res.send(result);
     });
 
-
     app.post("/visa", async (req, res) => {
       const newVisa = req.body;
       console.log("Adding new visa", newVisa);
@@ -52,8 +51,6 @@ async function run() {
       res.send(result);
     });
 
-
-    
     // visas  Info id update
     app.put("/visa/:id", async (req, res) => {
       const id = req.params.id;
@@ -68,62 +65,70 @@ async function run() {
         options
       );
       res.send(result);
-
     });
 
+    // new by email
+    // visas  Info id update
+    // app.put("/visa", async (req, res) => {
+    //   const email = req.body.email;
+    //   const filter = { email };
+    //   const options = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: req.body,
+    //   };
+    //   const result = await visasCollection.updateOne(
+    //     filter,
+    //     updatedDoc,
+    //     options
+    //   );
+    //   res.send(result);
 
-// new by email
-// visas  Info id update
-// app.put("/visa", async (req, res) => {
-//   const email = req.body.email;
-//   const filter = { email };
-//   const options = { upsert: true };
-//   const updatedDoc = {
-//     $set: req.body,
-//   };
-//   const result = await visasCollection.updateOne(
-//     filter,
-//     updatedDoc,
-//     options
-//   );
-//   res.send(result);
+    // });
 
-// });
+    app.patch("/visas", async (req, res) => {
+      const email = req.body.email;
+      const filter = { email }; // Filter by email
 
-app.patch("/visas", async (req, res) => {
-  const email = req.body.email;
-  const filter = {email}; // Filter by email
+      // Define the fields to update
+      const updatedDoc = {
+        $set: {
+          lastSignInTime: req.body?.lastSignInTime, // Update lastSignInTime
+          name: req.body?.name, // Update name
+          photo: req.body?.photo, // Update photo
+          visaType: req.body?.visaType, // Update visaType
+          processingTime: req.body?.processingTime, // Update processingTime
+          fee: req.body?.fee, // Update fee
+          validity: req.body?.validity, // Update validity
+        },
+      };
 
-  // Define the fields to update
-  const updatedDoc = {
-    $set: {
-      lastSignInTime: req.body?.lastSignInTime, // Update lastSignInTime
-      name: req.body?.name, // Update name
-      photo: req.body?.photo, // Update photo
-      visaType: req.body?.visaType, // Update visaType
-      processingTime: req.body?.processingTime, // Update processingTime
-      fee: req.body?.fee, // Update fee
-      validity: req.body?.validity, // Update validity
-    },
-  };
+      try {
+        // Update the document in the database
+        const result = await visasCollection.updateOne(filter, updatedDoc);
 
-  try {
-    // Update the document in the database
-    const result = await visasCollection.updateOne(filter, updatedDoc);
+        if (result.modifiedCount > 0) {
+          res
+            .status(200)
+            .send({ message: "Visa updated successfully", result });
+        } else {
+          res
+            .status(404)
+            .send({ message: "No visa found with the provided email" });
+        }
+      } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).send({ message: "Internal server error" });
+      }
+    });
 
-    if (result.modifiedCount > 0) {
-      res.status(200).send({ message: "Visa updated successfully", result });
-    } else {
-      res.status(404).send({ message: "No visa found with the provided email" });
-    }
-  } catch (error) {
-    console.error("Error updating user:", error);
-    res.status(500).send({ message: "Internal server error" });
-  }
-});
-
-
-
+    // Delete
+    app.delete("/visa/:id", async (req, res) => {
+      console.log("going to delete", req.params.id);
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await visasCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
