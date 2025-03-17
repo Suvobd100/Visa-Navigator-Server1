@@ -21,5 +21,5 @@ A backend server built with **Express.js** and **MongoDB** to power your applica
 
 1. Clone the repository:
    
-   git clone https://github.com/your-username/app-server.git
+   git clone https://github.com/Suvobd100/Visa-Navigator-Server1
    
