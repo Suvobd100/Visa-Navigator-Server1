@@ -1,18 +1,19 @@
-require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const app = express();
+
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+require("dotenv").config();
 
 const port = process.env.PORT || 5000;
+const app = express();
 
 // Middleware
-// app.use(cors());
-app.use(cors({
-  // origin: ["http://localhost:5173", "https://coffee-store-4439e.web.app"],
-  origin: ["http://localhost:5173", "https://visa-navigator-9458a.web.app"],
-  credentials: true,
-}));
+app.use(cors());
+// app.use(cors({
+//   // origin: ["http://localhost:5173", "https://coffee-store-4439e.web.app"],
+//   origin: ["https://visa-navigator-9458a.web.app"],
+//   credentials: true,
+// }));
 app.use(express.json());
 
 // db server con with authentication
@@ -31,7 +32,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
 
     // await client.db("admin").command({ ping: 1 });
